@@ -1,24 +1,22 @@
 from torch import nn
 
 class Discriminator(nn.Module):
-    def __init__(self,img_channel=1,hidden_dim=16):
+    def __init__(self,img_dim,hidden_dim=256):
         super().__init__()
         self.disc = nn.Sequential(
-            self.make_disc_block(img_channel, hidden_dim),
-            self.make_disc_block(hidden_dim, hidden_dim*2),
-            self.make_disc_block(hidden_dim*2,1,final_layer=True)
+            self.make_disc_block(img_dim, hidden_dim),
+            self.make_disc_block(hidden_dim,1,final_layer=True)
             )
         
-    def make_disc_block(self,input_channels,output_channels,kernel_size=4,stride=2,final_layer=False):
+    def make_disc_block(self,input_channels,output_channels,final_layer=False):
         if not final_layer:
             return nn.Sequential(
-                nn.Conv2d(input_channels, output_channels,kernel_size,stride),
-                nn.BatchNorm2d(output_channels),
-                nn.LeakyReLU(0.2)
+                nn.Linear(input_channels, output_channels),
+                nn.LeakyReLU(0.1)
                 )
         else:
             return nn.Sequential(
-                nn.Conv2d(input_channels, output_channels,kernel_size,stride),
+                nn.Linear(input_channels, output_channels),
                 nn.Sigmoid()
                 )
         
